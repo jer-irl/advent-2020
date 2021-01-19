@@ -27,7 +27,7 @@ fn main() -> Result<(), errors::AdventError> {
             Arg::with_name("PART")
                 .help("The part to run")
                 .index(2)
-                .default_value("0")
+                .default_value("0"),
         )
         .arg(
             Arg::with_name("stdin")
@@ -37,14 +37,22 @@ fn main() -> Result<(), errors::AdventError> {
         .get_matches();
 
     let read_stdin = matches.is_present("stdin");
-    let day: Option<u8> = matches.value_of("DAY").map(|s| s.parse::<u8>()).transpose()?.and_then(|n| match n {
-        0 => None,
-        n => Some(n),
-    });
-    let part: Option<char> = matches.value_of("PART").map(|s| s.parse::<char>()).transpose()?.and_then(|c| match c {
-        '0' => None,
-        c => Some(c),
-    });
+    let day: Option<u8> = matches
+        .value_of("DAY")
+        .map(|s| s.parse::<u8>())
+        .transpose()?
+        .and_then(|n| match n {
+            0 => None,
+            n => Some(n),
+        });
+    let part: Option<char> = matches
+        .value_of("PART")
+        .map(|s| s.parse::<char>())
+        .transpose()?
+        .and_then(|c| match c {
+            '0' => None,
+            c => Some(c),
+        });
 
     assert!(!(day == None && read_stdin));
     assert!(!(part == None && read_stdin));
@@ -71,17 +79,15 @@ fn main() -> Result<(), errors::AdventError> {
 
 fn run_day(read_stdin: bool, day: u8, part: Option<char>) -> Result<(), errors::AdventError> {
     match day {
-        n if 0 < n && n <= NUM_IMPLEMENTED => {
-            match part {
-                None => {
-                    for p in ['a', 'b'].iter() {
-                        run_part(read_stdin, day, *p)?;
-                    }
-                    Ok(())
+        n if 0 < n && n <= NUM_IMPLEMENTED => match part {
+            None => {
+                for p in ['a', 'b'].iter() {
+                    run_part(read_stdin, day, *p)?;
                 }
-                Some(p) => run_part(read_stdin, day, p)
+                Ok(())
             }
-        }
+            Some(p) => run_part(read_stdin, day, p),
+        },
         n if 0 < n && n <= NUM_PROBLEMS => Err(errors::AdventError::UnimplementedDayError),
         _ => Err(errors::AdventError::InvalidDayError),
     }
@@ -116,7 +122,9 @@ type Solver = dyn Fn(&str) -> Result<(), errors::AdventError>;
 fn get_solver(day: u8, part: char) -> Result<Box<Solver>, errors::AdventError> {
     match (day, part) {
         (1, 'a') => Ok(Box::from(day01a::solve)),
-        (d, _p) if 0 < d && d <= NUM_IMPLEMENTED => Err(errors::AdventError::UnimplementedPartError),
+        (d, _p) if 0 < d && d <= NUM_IMPLEMENTED => {
+            Err(errors::AdventError::UnimplementedPartError)
+        }
         (d, _p) if 0 < d && d <= NUM_PROBLEMS => Err(errors::AdventError::UnimplementedDayError),
         _ => Err(errors::AdventError::InvalidDayError),
     }
@@ -164,7 +172,7 @@ pub mod errors {
             Self::InvalidDayError
         }
     }
-    
+
     impl From<std::char::ParseCharError> for AdventError {
         fn from(_e: std::char::ParseCharError) -> Self {
             Self::InvalidPartError
