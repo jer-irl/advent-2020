@@ -1,5 +1,6 @@
 extern crate atty;
 extern crate clap;
+extern crate itertools;
 
 mod day01;
 
@@ -100,6 +101,8 @@ pub mod errors {
         UnimplementedDayError,
         NoInput,
         IoError(io::Error),
+        ParseError,
+        NoSolution,
     }
 
     impl fmt::Display for AdventError {
@@ -109,6 +112,8 @@ pub mod errors {
                 Self::UnimplementedDayError => write!(f, "UnimplementedDayError"),
                 Self::NoInput => write!(f, "NoInput"),
                 Self::IoError(e) => write!(f, "{:?}", e),
+                Self::ParseError => write!(f, "ParseError"),
+                Self::NoSolution => write!(f, "NoSolution"),
             }
         }
     }
