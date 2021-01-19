@@ -1,18 +1,18 @@
-extern crate clap;
 extern crate atty;
+extern crate clap;
 
 mod day01;
 
 use clap::{App, Arg};
-use std::io;
-use std::io::Read;
 use std::fmt;
 use std::fs::File;
+use std::io;
+use std::io::Read;
 
 const NUM_IMPLEMENTED: u8 = 1;
 const NUM_PROBLEMS: u8 = 25;
 
-fn main() -> Result<(), errors::AdventError>{
+fn main() -> Result<(), errors::AdventError> {
     let matches = App::new("Advent of Code 2020")
         .author("Jeremy Schroeder <jpschroeder2014@gmail.com>")
         .about("Simple rust solutions to AoC2020 to help me get better at rust.")
@@ -20,12 +20,12 @@ fn main() -> Result<(), errors::AdventError>{
             Arg::with_name("DAY")
                 .help("The day index to run")
                 .index(1)
-                .default_value("0")
+                .default_value("0"),
         )
         .arg(
             Arg::with_name("stdin")
                 .help("Pass if input is read from stdin")
-                .takes_value(false)
+                .takes_value(false),
         )
         .get_matches();
 
@@ -41,10 +41,10 @@ fn main() -> Result<(), errors::AdventError>{
                     Err(e) => {
                         println!("Error on day {} with exception {:?}", d, e);
                         break;
-                    },
+                    }
                 }
             }
-        },
+        }
         d if d <= 25 => run_day(read_stdin, d)?,
         _ => panic!("Invalid day input"),
     }
@@ -64,7 +64,7 @@ fn run_day(read_stdin: bool, day: u8) -> Result<(), errors::AdventError> {
                 match io::stdin().read_to_string(&mut input) {
                     Ok(0) | Err(_) => {
                         return Err(errors::AdventError::NoInput);
-                    },
+                    }
                     Ok(_) => (),
                 }
             } else {
@@ -73,7 +73,7 @@ fn run_day(read_stdin: bool, day: u8) -> Result<(), errors::AdventError> {
                 in_file.read_to_string(&mut input)?;
             }
             get_solver(day)?(&input)
-        },
+        }
         n if 0 < n && n <= NUM_PROBLEMS => Err(errors::AdventError::UnimplementedDayError),
         _ => Err(errors::AdventError::InvalidDayError),
     }
