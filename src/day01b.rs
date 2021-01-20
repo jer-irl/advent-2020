@@ -33,6 +33,6 @@ pub fn solve(input: &str) -> Result<(), AdventError> {
             println!("{}", n);
             Ok(())
         }
-        None => Err(AdventError::NoSolution)
+        None => Err(AdventError::NoSolution),
     }
 }

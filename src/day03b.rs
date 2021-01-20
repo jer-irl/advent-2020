@@ -2,7 +2,12 @@ use super::errors::AdventError;
 
 pub fn solve(input: &str) -> Result<(), AdventError> {
     let strides = [(1, 1), (3, 1), (5, 1), (7, 1), (1, 2)];
-    let result: usize = strides.iter().map(|stride| num_trees(&input, *stride)).collect::<Result<Vec<usize>, AdventError>>()?.iter().product();
+    let result: usize = strides
+        .iter()
+        .map(|stride| num_trees(&input, *stride))
+        .collect::<Result<Vec<usize>, AdventError>>()?
+        .iter()
+        .product();
     println!("{}", result);
     Ok(())
 }
