@@ -52,19 +52,43 @@ fn validate_passport(passport: &str) -> Result<bool, AdventError> {
 fn validate_item(captures: &regex::Captures) -> Result<Option<&'static str>, AdventError> {
     if let Some(match_) = captures.name("byr") {
         let birth_year: usize = match_.as_str().parse()?;
-        if 1920 <= birth_year && birth_year <= 2002 { Ok(Some("byr")) } else { Ok(None) }
+        if 1920 <= birth_year && birth_year <= 2002 {
+            Ok(Some("byr"))
+        } else {
+            Ok(None)
+        }
     } else if let Some(match_) = captures.name("iyr") {
         let issue_year: usize = match_.as_str().parse()?;
-        if 2010 <= issue_year && issue_year <= 2020 { Ok(Some("iyr")) } else { Ok(None) }
+        if 2010 <= issue_year && issue_year <= 2020 {
+            Ok(Some("iyr"))
+        } else {
+            Ok(None)
+        }
     } else if let Some(match_) = captures.name("eyr") {
         let expiration_year: usize = match_.as_str().parse()?;
-        if 2020 <= expiration_year && expiration_year <= 2030 { Ok(Some("eyr")) } else { Ok(None) }
+        if 2020 <= expiration_year && expiration_year <= 2030 {
+            Ok(Some("eyr"))
+        } else {
+            Ok(None)
+        }
     } else if let Some(match_) = captures.name("hgt") {
         let height: usize = match_.as_str().parse()?;
         match captures.name("unit").and_then(|m| Some(m.as_str())) {
-            Some("cm") => if 150 <= height && height <= 193 { Ok(Some("hgt")) } else { Ok(None) }
-            Some("in") => if 59 <= height && height <= 76 { Ok(Some("hgt")) } else { Ok(None) }
-            _ => Err(AdventError::ParseError)
+            Some("cm") => {
+                if 150 <= height && height <= 193 {
+                    Ok(Some("hgt"))
+                } else {
+                    Ok(None)
+                }
+            }
+            Some("in") => {
+                if 59 <= height && height <= 76 {
+                    Ok(Some("hgt"))
+                } else {
+                    Ok(None)
+                }
+            }
+            _ => Err(AdventError::ParseError),
         }
     } else if let Some(_) = captures.name("hcl") {
         Ok(Some("hcl"))
