@@ -3,6 +3,7 @@ extern crate clap;
 extern crate itertools;
 
 mod day01a;
+mod day01b;
 
 use clap::{App, Arg};
 use std::fmt;
@@ -62,7 +63,7 @@ fn main() -> Result<(), errors::AdventError> {
                 match run_day(read_stdin, d, part) {
                     Ok(_) => (),
                     Err(e) => {
-                        println!("Error on day {} with exception {:?}", d, e);
+                        println!("Error on day {} with result {:?}", d, e);
                         break;
                     }
                 }
@@ -107,7 +108,7 @@ fn run_part(read_stdin: bool, day: u8, part: char) -> Result<(), errors::AdventE
                     Ok(_) => (),
                 }
             } else {
-                let problem_str = format!("{:0>2}{}", day, part);
+                let problem_str = format!("{:0>2}", day);
                 let mut in_file = File::open("input/".to_string() + &problem_str)?;
                 in_file.read_to_string(&mut input)?;
             }
@@ -122,6 +123,7 @@ type Solver = dyn Fn(&str) -> Result<(), errors::AdventError>;
 fn get_solver(day: u8, part: char) -> Result<Box<Solver>, errors::AdventError> {
     match (day, part) {
         (1, 'a') => Ok(Box::from(day01a::solve)),
+        (1, 'b') => Ok(Box::from(day01b::solve)),
         (d, _p) if 0 < d && d <= NUM_IMPLEMENTED => {
             Err(errors::AdventError::UnimplementedPartError)
         }
