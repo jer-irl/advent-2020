@@ -4,11 +4,11 @@ use std::collections::HashSet;
 use super::errors::AdventError;
 
 pub fn solve(input: &str) -> Result<(), AdventError> {
-    let required_elems: HashSet<&str> = ["byr", "iyr", "eyr", "hgt", "hcl", "ecl", "pid"]
+    let required_elems: HashSet<_> = ["byr", "iyr", "eyr", "hgt", "hcl", "ecl", "pid"]
         .iter()
         .copied()
         .collect();
-    let optional_elems: HashSet<&str> = ["cid"].iter().copied().collect();
+    let optional_elems: HashSet<_> = ["cid"].iter().copied().collect();
 
     let item_re = Regex::new(r"(?P<tag>\w{3}):\S+").unwrap();
     let chunks = input.split_terminator("\n\n");

@@ -10,6 +10,7 @@ mod day02b;
 mod day03a;
 mod day03b;
 mod day04a;
+mod day04b;
 
 use clap::{App, Arg};
 use std::fmt;
@@ -135,6 +136,7 @@ fn get_solver(day: u8, part: char) -> Result<Box<Solver>, errors::AdventError> {
         (3, 'a') => Ok(Box::from(day03a::solve)),
         (3, 'b') => Ok(Box::from(day03b::solve)),
         (4, 'a') => Ok(Box::from(day04a::solve)),
+        (4, 'b') => Ok(Box::from(day04b::solve)),
         (d, _p) if 0 < d && d <= NUM_IMPLEMENTED => {
             Err(errors::AdventError::UnimplementedPartError)
         }
