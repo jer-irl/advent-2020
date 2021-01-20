@@ -11,6 +11,7 @@ mod day03a;
 mod day03b;
 mod day04a;
 mod day04b;
+mod day05a;
 
 use clap::{App, Arg};
 use std::fmt;
@@ -18,7 +19,7 @@ use std::fs::File;
 use std::io;
 use std::io::Read;
 
-const NUM_IMPLEMENTED: u8 = 4;
+const NUM_IMPLEMENTED: u8 = 5;
 const NUM_PROBLEMS: u8 = 25;
 
 fn main() -> Result<(), errors::AdventError> {
@@ -137,6 +138,7 @@ fn get_solver(day: u8, part: char) -> Result<Box<Solver>, errors::AdventError> {
         (3, 'b') => Ok(Box::from(day03b::solve)),
         (4, 'a') => Ok(Box::from(day04a::solve)),
         (4, 'b') => Ok(Box::from(day04b::solve)),
+        (5, 'a') => Ok(Box::from(day05a::solve)),
         (d, _p) if 0 < d && d <= NUM_IMPLEMENTED => {
             Err(errors::AdventError::UnimplementedPartError)
         }
