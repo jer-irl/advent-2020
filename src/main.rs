@@ -1,9 +1,11 @@
 extern crate atty;
 extern crate clap;
 extern crate itertools;
+extern crate regex;
 
 mod day01a;
 mod day01b;
+mod day02a;
 
 use clap::{App, Arg};
 use std::fmt;
@@ -11,7 +13,7 @@ use std::fs::File;
 use std::io;
 use std::io::Read;
 
-const NUM_IMPLEMENTED: u8 = 1;
+const NUM_IMPLEMENTED: u8 = 2;
 const NUM_PROBLEMS: u8 = 25;
 
 fn main() -> Result<(), errors::AdventError> {
@@ -124,6 +126,7 @@ fn get_solver(day: u8, part: char) -> Result<Box<Solver>, errors::AdventError> {
     match (day, part) {
         (1, 'a') => Ok(Box::from(day01a::solve)),
         (1, 'b') => Ok(Box::from(day01b::solve)),
+        (2, 'a') => Ok(Box::from(day02a::solve)),
         (d, _p) if 0 < d && d <= NUM_IMPLEMENTED => {
             Err(errors::AdventError::UnimplementedPartError)
         }
