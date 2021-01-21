@@ -20,12 +20,12 @@ pub fn solve(input: &str) -> Result<(), AdventError> {
     Ok(())
 }
 
-struct ContentRule {
+pub struct ContentRule {
     pub quantity: usize,
     pub color: String,
 }
 
-fn get_rules(input: &str) -> Result<HashMap<String, Vec<ContentRule>>, AdventError> {
+pub fn get_rules(input: &str) -> Result<HashMap<String, Vec<ContentRule>>, AdventError> {
     let rule_re = Regex::new(r"(?P<color>.+) bags contain (?P<contents>.+)").unwrap();
     let contents_re = Regex::new(r"(?P<num>\d+) (?P<color>\w+ \w+) bags?[\.,]?").unwrap();
 

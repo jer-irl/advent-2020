@@ -17,6 +17,7 @@ mod day05b;
 mod day06a;
 mod day06b;
 mod day07a;
+mod day07b;
 
 use clap::{App, Arg};
 use std::fmt;
@@ -146,6 +147,7 @@ fn get_solver(day: u8, part: char) -> Result<Box<Solver>, errors::AdventError> {
         (6, 'a') => Ok(Box::from(day06a::solve)),
         (6, 'b') => Ok(Box::from(day06b::solve)),
         (7, 'a') => Ok(Box::from(day07a::solve)),
+        (7, 'b') => Ok(Box::from(day07b::solve)),
         (d, _p) if 0 < d && d <= NUM_PROBLEMS => Err(errors::AdventError::UnimplementedDayError),
         _ => Err(errors::AdventError::InvalidDayError),
     }
