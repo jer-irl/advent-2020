@@ -16,6 +16,7 @@ mod day05a;
 mod day05b;
 mod day06a;
 mod day06b;
+mod day07a;
 
 use clap::{App, Arg};
 use std::fmt;
@@ -23,7 +24,6 @@ use std::fs::File;
 use std::io;
 use std::io::Read;
 
-const NUM_IMPLEMENTED: u8 = 6;
 const NUM_PROBLEMS: u8 = 25;
 
 fn main() -> Result<(), errors::AdventError> {
@@ -71,12 +71,11 @@ fn main() -> Result<(), errors::AdventError> {
     assert!(!(part == None && read_stdin));
     match day {
         None => {
-            for d in 1..26 {
+            for d in 1..=NUM_PROBLEMS {
                 match run_day(read_stdin, d, part) {
                     Ok(_) => (),
                     Err(e) => {
                         println!("Error on day {} with result {:?}", d, e);
-                        break;
                     }
                 }
             }
@@ -92,7 +91,7 @@ fn main() -> Result<(), errors::AdventError> {
 
 fn run_day(read_stdin: bool, day: u8, part: Option<char>) -> Result<(), errors::AdventError> {
     match day {
-        n if 0 < n && n <= NUM_IMPLEMENTED => match part {
+        n if 0 < n && n <= NUM_PROBLEMS => match part {
             None => {
                 for p in ['a', 'b'].iter() {
                     run_part(read_stdin, day, *p)?;
@@ -100,8 +99,7 @@ fn run_day(read_stdin: bool, day: u8, part: Option<char>) -> Result<(), errors::
                 Ok(())
             }
             Some(p) => run_part(read_stdin, day, p),
-        },
-        n if 0 < n && n <= NUM_PROBLEMS => Err(errors::AdventError::UnimplementedDayError),
+        }
         _ => Err(errors::AdventError::InvalidDayError),
     }
 }
@@ -111,6 +109,7 @@ fn run_part(read_stdin: bool, day: u8, part: char) -> Result<(), errors::AdventE
 
     match part {
         'a' | 'b' => {
+            let solver = get_solver(day, part)?;
             let mut input = String::new();
             if read_stdin {
                 match io::stdin().read_to_string(&mut input) {
@@ -124,7 +123,7 @@ fn run_part(read_stdin: bool, day: u8, part: char) -> Result<(), errors::AdventE
                 let mut in_file = File::open("input/".to_string() + &problem_str)?;
                 in_file.read_to_string(&mut input)?;
             }
-            get_solver(day, part)?(&input)
+            solver(&input)
         }
         _ => Err(errors::AdventError::InvalidPartError),
     }
@@ -146,9 +145,7 @@ fn get_solver(day: u8, part: char) -> Result<Box<Solver>, errors::AdventError> {
         (5, 'b') => Ok(Box::from(day05b::solve)),
         (6, 'a') => Ok(Box::from(day06a::solve)),
         (6, 'b') => Ok(Box::from(day06b::solve)),
-        (d, _p) if 0 < d && d <= NUM_IMPLEMENTED => {
-            Err(errors::AdventError::UnimplementedPartError)
-        }
+        (7, 'a') => Ok(Box::from(day07a::solve)),
         (d, _p) if 0 < d && d <= NUM_PROBLEMS => Err(errors::AdventError::UnimplementedDayError),
         _ => Err(errors::AdventError::InvalidDayError),
     }
