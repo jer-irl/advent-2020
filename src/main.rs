@@ -23,6 +23,7 @@ mod day08b;
 mod day09a;
 mod day09b;
 mod day10a;
+mod day10b;
 
 mod vm;
 
@@ -160,6 +161,7 @@ fn get_solver(day: u8, part: char) -> Result<Box<Solver>, errors::AdventError> {
         (09, 'a') => Ok(Box::from(day09a::solve)),
         (09, 'b') => Ok(Box::from(day09b::solve)),
         (10, 'a') => Ok(Box::from(day10a::solve)),
+        (10, 'b') => Ok(Box::from(day10b::solve)),
         (d, _p) if 0 < d && d <= NUM_PROBLEMS => Err(errors::AdventError::UnimplementedDayError),
         _ => Err(errors::AdventError::InvalidDayError),
     }
