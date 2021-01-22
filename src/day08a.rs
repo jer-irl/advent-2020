@@ -1,14 +1,16 @@
 use std::collections::HashSet;
 
 use super::errors::AdventError;
-use super::vm::{RunnableMachine, VirtualMachine, VirtualMachineError};
+use super::vm::{Program, RunnableMachine, VirtualMachine, errors::VirtualMachineError};
 
 pub fn solve(input: &str) -> Result<(), AdventError> {
-    let vm = VirtualMachine::from(input);
-    if let Err(VirtualMachineError::ParseError(_)) = vm {
-        return Err(AdventError::ParseError);
-    }
-    let mut vm = vm.unwrap();
+    let program = match Program::from(input) {
+        Ok(p) => p,
+        Err(VirtualMachineError::ParseError(_)) => return Err(AdventError::ParseError),
+        Err(_) => unreachable!(),
+    };
+    let mut vm = VirtualMachine::from(program);
+
     let mut hit_instructions = HashSet::new();
 
     loop {
