@@ -18,6 +18,9 @@ mod day06a;
 mod day06b;
 mod day07a;
 mod day07b;
+mod day08a;
+
+mod vm;
 
 use clap::{App, Arg};
 use std::fmt;
@@ -100,7 +103,7 @@ fn run_day(read_stdin: bool, day: u8, part: Option<char>) -> Result<(), errors::
                 Ok(())
             }
             Some(p) => run_part(read_stdin, day, p),
-        }
+        },
         _ => Err(errors::AdventError::InvalidDayError),
     }
 }
@@ -148,6 +151,7 @@ fn get_solver(day: u8, part: char) -> Result<Box<Solver>, errors::AdventError> {
         (6, 'b') => Ok(Box::from(day06b::solve)),
         (7, 'a') => Ok(Box::from(day07a::solve)),
         (7, 'b') => Ok(Box::from(day07b::solve)),
+        (8, 'a') => Ok(Box::from(day08a::solve)),
         (d, _p) if 0 < d && d <= NUM_PROBLEMS => Err(errors::AdventError::UnimplementedDayError),
         _ => Err(errors::AdventError::InvalidDayError),
     }

@@ -15,7 +15,7 @@ pub fn solve(input: &str) -> Result<(), AdventError> {
         .into_iter()
         .filter(|x| *x)
         .count();
-    
+
     println!("{}", result);
     Ok(())
 }
@@ -51,14 +51,17 @@ pub fn get_rules(input: &str) -> Result<HashMap<String, Vec<ContentRule>>, Adven
     }
 }
 
-fn can_reach_target_color(rules: &HashMap<String, Vec<ContentRule>>, starting_color: &str) -> Result<bool, AdventError> {
+fn can_reach_target_color(
+    rules: &HashMap<String, Vec<ContentRule>>,
+    starting_color: &str,
+) -> Result<bool, AdventError> {
     let color_rules = match rules.get(starting_color) {
         None => return Err(AdventError::NoSolution),
         Some(color_rules) => color_rules,
     };
     for rule in color_rules {
         if rule.color == TARGET_COLOR || can_reach_target_color(rules, &rule.color)? {
-            return Ok(true)
+            return Ok(true);
         }
     }
     Ok(false)
