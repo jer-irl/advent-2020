@@ -1,7 +1,7 @@
 use std::collections::HashSet;
 
 use super::errors::AdventError;
-use super::vm::{Program, RunnableMachine, VirtualMachine, errors::VirtualMachineError};
+use super::vm::{errors::VirtualMachineError, Program, RunnableMachine, VirtualMachine};
 
 pub fn solve(input: &str) -> Result<(), AdventError> {
     let program = match Program::from(input) {

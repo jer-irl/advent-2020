@@ -50,13 +50,19 @@ impl RunnableMachine for VirtualMachine {
                 Some(Instruction::Jmp(n)) => {
                     let new_iptr = self.iptr as isize + n;
                     if new_iptr < 0 {
-                        return Err(errors::VirtualMachineError::InstructionPtrOutOfRange(new_iptr));
+                        return Err(errors::VirtualMachineError::InstructionPtrOutOfRange(
+                            new_iptr,
+                        ));
                     } else {
                         self.iptr = new_iptr as usize
                     }
                 }
                 Some(Instruction::Nop(_)) => self.iptr += 1,
-                None => return Err(errors::VirtualMachineError::InstructionPtrOutOfRange(self.iptr as isize)),
+                None => {
+                    return Err(errors::VirtualMachineError::InstructionPtrOutOfRange(
+                        self.iptr as isize,
+                    ))
+                }
             }
         }
         Ok(())
@@ -81,7 +87,11 @@ impl Program {
         self.instructions.get(index)
     }
 
-    pub fn replace_instruction(&mut self, index: usize, instruction: Instruction) -> Result<(), ()> {
+    pub fn replace_instruction(
+        &mut self,
+        index: usize,
+        instruction: Instruction,
+    ) -> Result<(), ()> {
         match self.instructions.get_mut(index) {
             Some(i) => {
                 *i = instruction;

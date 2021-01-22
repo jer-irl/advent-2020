@@ -2,17 +2,13 @@ use std::collections::HashSet;
 
 use super::errors::AdventError;
 use super::vm::{
-    errors::VirtualMachineError, 
-    Instruction,
-    Program,
-    RunnableMachine,
-    VirtualMachine,
+    errors::VirtualMachineError, Instruction, Program, RunnableMachine, VirtualMachine,
 };
 
 pub fn solve(input: &str) -> Result<(), AdventError> {
     let input_program = Program::from(input);
     if let Err(VirtualMachineError::ParseError(_)) = input_program {
-        return Err(AdventError::ParseError)
+        return Err(AdventError::ParseError);
     }
     let input_program = input_program.unwrap();
 
@@ -20,14 +16,16 @@ pub fn solve(input: &str) -> Result<(), AdventError> {
         let instruction_to_substitute = match input_program.get_instruction(i) {
             Some(Instruction::Nop(n)) => Instruction::Jmp(*n),
             Some(Instruction::Jmp(n)) => Instruction::Nop(*n),
-            Some(i) => continue,
+            Some(_i) => continue,
             None => unreachable!(),
         };
         let mut program_to_run = input_program.clone();
-        program_to_run.replace_instruction(i, instruction_to_substitute).unwrap();
+        program_to_run
+            .replace_instruction(i, instruction_to_substitute)
+            .unwrap();
         if let Some(acc) = get_termination_acc(program_to_run)? {
             println!("{}", acc);
-            return Ok(())
+            return Ok(());
         }
     }
 
@@ -50,7 +48,7 @@ fn get_termination_acc(program: Program) -> Result<Option<isize>, AdventError> {
         if hit_instructions.contains(&vm.iptr()) {
             return Ok(None);
         } else if vm.iptr() == target_iptr {
-            return Ok(Some(vm.acc()))
+            return Ok(Some(vm.acc()));
         }
     }
 }
