@@ -22,6 +22,7 @@ mod day08a;
 mod day08b;
 mod day09a;
 mod day09b;
+mod day10a;
 
 mod vm;
 
@@ -140,24 +141,25 @@ type Solver = dyn Fn(&str) -> Result<(), errors::AdventError>;
 
 fn get_solver(day: u8, part: char) -> Result<Box<Solver>, errors::AdventError> {
     match (day, part) {
-        (1, 'a') => Ok(Box::from(day01a::solve)),
-        (1, 'b') => Ok(Box::from(day01b::solve)),
-        (2, 'a') => Ok(Box::from(day02a::solve)),
-        (2, 'b') => Ok(Box::from(day02b::solve)),
-        (3, 'a') => Ok(Box::from(day03a::solve)),
-        (3, 'b') => Ok(Box::from(day03b::solve)),
-        (4, 'a') => Ok(Box::from(day04a::solve)),
-        (4, 'b') => Ok(Box::from(day04b::solve)),
-        (5, 'a') => Ok(Box::from(day05a::solve)),
-        (5, 'b') => Ok(Box::from(day05b::solve)),
-        (6, 'a') => Ok(Box::from(day06a::solve)),
-        (6, 'b') => Ok(Box::from(day06b::solve)),
-        (7, 'a') => Ok(Box::from(day07a::solve)),
-        (7, 'b') => Ok(Box::from(day07b::solve)),
-        (8, 'a') => Ok(Box::from(day08a::solve)),
-        (8, 'b') => Ok(Box::from(day08b::solve)),
-        (9, 'a') => Ok(Box::from(day09a::solve)),
-        (9, 'b') => Ok(Box::from(day09b::solve)),
+        (01, 'a') => Ok(Box::from(day01a::solve)),
+        (01, 'b') => Ok(Box::from(day01b::solve)),
+        (02, 'a') => Ok(Box::from(day02a::solve)),
+        (02, 'b') => Ok(Box::from(day02b::solve)),
+        (03, 'a') => Ok(Box::from(day03a::solve)),
+        (03, 'b') => Ok(Box::from(day03b::solve)),
+        (04, 'a') => Ok(Box::from(day04a::solve)),
+        (04, 'b') => Ok(Box::from(day04b::solve)),
+        (05, 'a') => Ok(Box::from(day05a::solve)),
+        (05, 'b') => Ok(Box::from(day05b::solve)),
+        (06, 'a') => Ok(Box::from(day06a::solve)),
+        (06, 'b') => Ok(Box::from(day06b::solve)),
+        (07, 'a') => Ok(Box::from(day07a::solve)),
+        (07, 'b') => Ok(Box::from(day07b::solve)),
+        (08, 'a') => Ok(Box::from(day08a::solve)),
+        (08, 'b') => Ok(Box::from(day08b::solve)),
+        (09, 'a') => Ok(Box::from(day09a::solve)),
+        (09, 'b') => Ok(Box::from(day09b::solve)),
+        (10, 'a') => Ok(Box::from(day10a::solve)),
         (d, _p) if 0 < d && d <= NUM_PROBLEMS => Err(errors::AdventError::UnimplementedDayError),
         _ => Err(errors::AdventError::InvalidDayError),
     }
