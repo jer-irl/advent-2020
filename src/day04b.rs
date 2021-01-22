@@ -73,7 +73,7 @@ fn validate_item(captures: &regex::Captures) -> Result<Option<&'static str>, Adv
         }
     } else if let Some(match_) = captures.name("hgt") {
         let height: usize = match_.as_str().parse()?;
-        match captures.name("unit").and_then(|m| Some(m.as_str())) {
+        match captures.name("unit").map(|m| m.as_str()) {
             Some("cm") => {
                 if (150..=193).contains(&height) {
                     Ok(Some("hgt"))

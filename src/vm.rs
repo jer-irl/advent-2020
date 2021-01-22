@@ -1,4 +1,7 @@
-use std::{fmt, fmt::{Display, Formatter}};
+use std::{
+    fmt,
+    fmt::{Display, Formatter},
+};
 
 use lazy_static::lazy_static;
 use regex::Regex;
@@ -47,7 +50,7 @@ impl RunnableMachine for VirtualMachine {
                 Instruction::Jmp(n) => {
                     let new_iptr = self.iptr as isize + n;
                     if new_iptr < 0 {
-                        return Err(VirtualMachineError::InstructionPtrOutOfRange(new_iptr))
+                        return Err(VirtualMachineError::InstructionPtrOutOfRange(new_iptr));
                     } else {
                         self.iptr = new_iptr as usize
                     }
@@ -67,7 +70,7 @@ pub struct Program {
 impl Program {
     pub fn from(input: &str) -> Result<Self, VirtualMachineError> {
         let instructions = input
-            .split_terminator("\n")
+            .split_terminator('\n')
             .map(Instruction::from)
             .collect::<Result<Vec<Instruction>, ParseError>>()?;
         Ok(Program { instructions })
@@ -76,7 +79,9 @@ impl Program {
     pub fn get_instruction(&self, index: usize) -> Result<&Instruction, VirtualMachineError> {
         match self.instructions.get(index) {
             Some(i) => Ok(i),
-            None => Err(VirtualMachineError::InstructionPtrOutOfRange(index as isize)),
+            None => Err(VirtualMachineError::InstructionPtrOutOfRange(
+                index as isize,
+            )),
         }
     }
 }
@@ -92,11 +97,10 @@ impl Instruction {
     pub fn from(line: &str) -> Result<Self, ParseError> {
         match INSTRUCTION_RE.captures(line) {
             Some(captures) => {
-                let opcode_match: Option<&str> =
-                    captures.name("opcode").and_then(|c| Some(c.as_str()));
+                let opcode_match: Option<&str> = captures.name("opcode").map(|c| c.as_str());
                 let arg_match: Option<isize> = captures
                     .name("arg")
-                    .and_then(|c| Some(c.as_str()))
+                    .map(|c| c.as_str())
                     .and_then(|s| s.parse().ok());
                 match (opcode_match, arg_match) {
                     (None, _) => Err(ParseError::NoCaptures),
@@ -120,8 +124,7 @@ pub enum VirtualMachineError {
 
 impl Display for VirtualMachineError {
     fn fmt(&self, formatter: &mut Formatter<'_>) -> Result<(), fmt::Error> {
-        write!(formatter, "{:?}", self);
-        Ok(())
+        write!(formatter, "{:?}", self)
     }
 }
 
@@ -140,7 +143,6 @@ pub enum ParseError {
 
 impl Display for ParseError {
     fn fmt(&self, formatter: &mut Formatter<'_>) -> Result<(), fmt::Error> {
-        write!(formatter, "{:?}", self);
-        Ok(())
+        write!(formatter, "{:?}", self)
     }
 }
