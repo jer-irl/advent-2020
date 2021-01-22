@@ -1,7 +1,11 @@
 use super::errors::AdventError;
 
 pub fn solve(input: &str) -> Result<(), AdventError> {
-    let mut numbers: Vec<usize> = match input.split_whitespace().map(|s| s.parse::<usize>()).collect() {
+    let mut numbers: Vec<usize> = match input
+        .split_whitespace()
+        .map(|s| s.parse::<usize>())
+        .collect()
+    {
         Ok(numbers) => numbers,
         Err(_) => return Err(AdventError::ParseError),
     };
