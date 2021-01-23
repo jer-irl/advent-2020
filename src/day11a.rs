@@ -4,20 +4,27 @@ use itertools::iproduct;
 
 use super::errors::AdventError;
 
+const NEIGHBOR_TOLERANCE: usize = 4;
+
 pub fn solve(input: &str) -> Result<(), AdventError> {
-    let mut waiting_area = WaitingArea::new(input)?;
+    let mut waiting_area = WaitingArea::new(input, day11arules)?;
     while waiting_area.simulate_step() {}
     println!("{}", waiting_area.num_occupied());
     Ok(())
 }
 
 #[derive(PartialEq)]
-struct WaitingArea {
+pub struct WaitingArea<F>
+    where F: Fn(SeatState, usize) -> SeatState
+{
     state: HashMap<(isize, isize), SeatState>,
+    rules: F,
 }
 
-impl WaitingArea {
-    pub fn new(input: &str) -> Result<Self, AdventError> {
+impl<F> WaitingArea<F> 
+    where F: Fn(SeatState, usize) -> SeatState
+{
+    pub fn new(input: &str, rules: F) -> Result<Self, AdventError> {
         let mut state = HashMap::new();
         for (row, line) in input.split_whitespace().enumerate() {
             for (col, c) in line.chars().enumerate() {
@@ -35,7 +42,7 @@ impl WaitingArea {
                 }
             }
         }
-        Ok(Self { state })
+        Ok(Self { state, rules })
     }
 
     pub fn simulate_step(&mut self) -> bool {
@@ -56,24 +63,9 @@ impl WaitingArea {
                     }
                 })
                 .count();
-            match seat_state {
-                SeatState::Vacant => {
-                    if num_neighbors == 0 {
-                        self.state
-                            .insert((*row, *col), SeatState::Occupied)
-                            .expect("Coding error");
-                        any_changes = true;
-                    }
-                }
-                SeatState::Occupied => {
-                    if num_neighbors >= 4 {
-                        self.state
-                            .insert((*row, *col), SeatState::Vacant)
-                            .expect("Coding error");
-                        any_changes = true;
-                    }
-                }
-            }
+            let new_state = (self.rules)(*seat_state, num_neighbors);
+            any_changes = any_changes || new_state != *seat_state;
+            self.state.insert((*row, *col), new_state).expect("Coding error");
         }
         any_changes
     }
@@ -87,7 +79,15 @@ impl WaitingArea {
 }
 
 #[derive(Copy, Clone, Debug, PartialEq)]
-enum SeatState {
+pub enum SeatState {
     Occupied,
     Vacant,
+}
+
+fn day11arules(current_state: SeatState, num_neighbors: usize) -> SeatState {
+    match (current_state, num_neighbors) {
+        (SeatState::Vacant, 0) => SeatState::Occupied,
+        (SeatState::Occupied, n) if n >= NEIGHBOR_TOLERANCE => SeatState::Vacant,
+        _ => current_state,
+    }
 }
