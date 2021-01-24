@@ -2,6 +2,8 @@ use std::collections::HashMap;
 
 use itertools::iproduct;
 
+use crate::waiting_area;
+
 use super::errors::AdventError;
 use super::waiting_area::{
     private,
@@ -29,14 +31,15 @@ impl Day11aWaitingArea {
         for (row, line) in input.split_whitespace().enumerate() {
             for (col, c) in line.chars().enumerate() {
                 match c {
-                    '.' => (),
-                    'L' => {
-                        if state
+                    '.' => if state
+                            .insert((row as isize, col as isize), SeatState::NoChair)
+                            .is_some() {
+                        return Err(AdventError::ParseError);
+                    }
+                    'L' => if state
                             .insert((row as isize, col as isize), SeatState::Vacant)
-                            .is_some()
-                        {
-                            return Err(AdventError::ParseError);
-                        }
+                            .is_some() {
+                        return Err(AdventError::ParseError);
                     }
                     '#' | _ => return Err(AdventError::ParseError),
                 }

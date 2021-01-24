@@ -166,6 +166,7 @@ fn get_solver(day: u8, part: char) -> Result<&'static Solver, errors::AdventErro
         (10, 'a') => Ok(&day10a::solve),
         (10, 'b') => Ok(&day10b::solve),
         (11, 'a') => Ok(&day11a::solve),
+        (11, 'b') => Ok(&day11b::solve),
         (d, _p) if 0 < d && d <= NUM_PROBLEMS => Err(errors::AdventError::UnimplementedDayError),
         _ => Err(errors::AdventError::InvalidDayError),
     }

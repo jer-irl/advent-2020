@@ -32,4 +32,16 @@ pub(crate) mod private {
 pub enum SeatState {
     Occupied,
     Vacant,
+    NoChair,
+}
+
+impl From<char> for SeatState {
+    fn from(c: char) -> Self {
+        match c {
+            '#' => Self::Occupied,
+            'L' => Self::Vacant,
+            '.' => Self::NoChair,
+            _ => unreachable!(),
+        }
+    }
 }
