@@ -1,5 +1,3 @@
-use itertools::chain;
-
 use super::errors::AdventError;
 use super::waiting_area::{
     private,

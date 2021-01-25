@@ -26,6 +26,7 @@ mod day10a;
 mod day10b;
 mod day11a;
 mod day11b;
+mod day12a;
 
 mod waiting_area;
 mod vm;
@@ -37,6 +38,7 @@ use std::io;
 use std::io::Read;
 
 const NUM_PROBLEMS: u8 = 25;
+const EXCLUDE_FROM_DEFAULT: [u8; 1] = [11];
 
 fn main() -> Result<(), errors::AdventError> {
     let matches = App::new("Advent of Code 2020")
@@ -59,6 +61,11 @@ fn main() -> Result<(), errors::AdventError> {
                 .help("Pass if input is read from stdin")
                 .takes_value(false),
         )
+        .arg(
+            Arg::with_name("include-all")
+                .help("Force all problems to run, including those excluded by default.")
+                .takes_value(false),
+        )
         .get_matches();
 
     let read_stdin = matches.is_present("stdin");
@@ -78,12 +85,16 @@ fn main() -> Result<(), errors::AdventError> {
             '0' => None,
             c => Some(c),
         });
+    let include_all = matches.is_present("include-all");
 
     assert!(!(day == None && read_stdin));
     assert!(!(part == None && read_stdin));
     match day {
         None => {
             for d in 1..=NUM_PROBLEMS {
+                if EXCLUDE_FROM_DEFAULT.contains(&d) && !include_all {
+                    continue
+                }
                 match run_day(read_stdin, d, part) {
                     Ok(_) => (),
                     Err(e) => {
@@ -167,6 +178,7 @@ fn get_solver(day: u8, part: char) -> Result<&'static Solver, errors::AdventErro
         (10, 'b') => Ok(&day10b::solve),
         (11, 'a') => Ok(&day11a::solve),
         (11, 'b') => Ok(&day11b::solve),
+        (12, 'a') => Ok(&day12a::solve),
         (d, _p) if 0 < d && d <= NUM_PROBLEMS => Err(errors::AdventError::UnimplementedDayError),
         _ => Err(errors::AdventError::InvalidDayError),
     }
