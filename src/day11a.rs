@@ -2,8 +2,6 @@ use std::collections::HashMap;
 
 use itertools::iproduct;
 
-use crate::waiting_area;
-
 use super::errors::AdventError;
 use super::waiting_area::{
     private,

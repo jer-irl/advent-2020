@@ -63,14 +63,14 @@ impl ShipState {
 }
 
 #[derive(Clone, Copy)]
-enum Bearing {
+pub enum Bearing {
     North,
     East,
     South,
     West,
 }
 
-enum Instruction {
+pub enum Instruction {
     North(isize),
     South(isize),
     East(isize),
