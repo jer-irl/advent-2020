@@ -31,6 +31,7 @@ mod day12a;
 mod day12b;
 mod day13a;
 mod day13b;
+mod day14a;
 
 mod waiting_area;
 mod vm;
@@ -167,6 +168,7 @@ fn get_solver(day: u8, part: char) -> Result<&'static Solver, errors::AdventErro
         (12, 'b') => Ok(&day12b::solve),
         (13, 'a') => Ok(&day13a::solve),
         (13, 'b') => Ok(&day13b::solve),
+        (14, 'a') => Ok(&day14a::solve),
         (d, _p) if 0 < d && d <= NUM_PROBLEMS => Err(errors::AdventError::UnimplementedDayError),
         _ => Err(errors::AdventError::InvalidDayError),
     }
