@@ -1,6 +1,6 @@
 //! I messed this one up.  It's inefficient and unclear.  Maybe I'll improve it at some point.
 
-use std::collections::HashMap;
+use std::collections::BTreeMap as HashMap;
 
 use super::errors::AdventError;
 
@@ -13,7 +13,7 @@ pub fn solve(input: &str) -> Result<(), AdventError> {
     Ok(())
 }
 
-fn solve_parsed(seed_numbers: &[u64], i: usize) -> Result<u64, AdventError> {
+pub fn solve_parsed(seed_numbers: &[u64], i: usize) -> Result<u64, AdventError> {
     let iter = MemoryGameIterator::new(&seed_numbers);
     let _debug = iter.take(i).collect::<Vec<_>>();
     let mut iter = MemoryGameIterator::new(&seed_numbers);
@@ -24,7 +24,28 @@ struct MemoryGameIterator<'a> {
     seed_numbers: &'a [u64],
     current_idx: u64,
     spoken_numbers: Vec<u64>,
-    last_spoken_time: HashMap<u64, Vec<u64>>,
+    last_spoken_time: HashMap<u64, LastTwoIdxs>,
+}
+
+struct LastTwoIdxs(Option<u64>, Option<u64>);
+
+impl LastTwoIdxs {
+    pub fn new() -> Self {
+        Self(None, None)
+    }
+
+    pub fn push(&mut self, next_idx: u64) {
+        self.0 = self.1;
+        self.1 = Some(next_idx);
+    }
+
+    pub fn most_recently_pushed(&self) -> Option<u64> {
+        self.1
+    }
+
+    pub fn next_most_recently_pushed(&self) -> Option<u64> {
+        self.0
+    }
 }
 
 impl<'a> MemoryGameIterator<'a> {
@@ -45,8 +66,8 @@ impl<'a> Iterator for MemoryGameIterator<'a> {
 
             let last_spoken_number = self.spoken_numbers.last().unwrap();
             match self.last_spoken_time.get(&last_spoken_number) {
-                Some(prev_idxs) if prev_idxs.len() > 1 => {
-                    self.current_idx - 1 - prev_idxs.get(prev_idxs.len() - 2).unwrap()
+                Some(prev_idxs) if prev_idxs.next_most_recently_pushed().is_some() => {
+                    self.current_idx - 1 - prev_idxs.next_most_recently_pushed().unwrap()
                 },
                 Some(_) | None => 0
             }
@@ -54,11 +75,11 @@ impl<'a> Iterator for MemoryGameIterator<'a> {
 
         self.spoken_numbers.push(current_number);
         if !self.last_spoken_time.contains_key(&current_number) {
-            self.last_spoken_time.insert(current_number, vec![]);
+            self.last_spoken_time.insert(current_number, LastTwoIdxs::new());
         }
         self.last_spoken_time.get_mut(&current_number).unwrap().push(self.current_idx);
         assert_eq!(*self.spoken_numbers.get(self.current_idx as usize).unwrap(), current_number);
-        assert_eq!(*self.last_spoken_time.get(&current_number).unwrap().last().unwrap(), self.current_idx);
+        assert_eq!(self.last_spoken_time.get(&current_number).unwrap().most_recently_pushed().unwrap(), self.current_idx);
         self.current_idx += 1;
         Some(current_number)
     }
