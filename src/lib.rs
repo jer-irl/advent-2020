@@ -40,7 +40,7 @@ mod waiting_area;
 mod vm;
 
 const NUM_PROBLEMS: u8 = 25;
-const EXCLUDE_FROM_DEFAULT: [u8; 1] = [11];
+const EXCLUDE_FROM_DEFAULT: [u8; 2] = [11, 15];
 
 pub struct Config {
     read_stdin: bool,
