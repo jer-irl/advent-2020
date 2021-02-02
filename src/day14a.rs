@@ -42,7 +42,7 @@ fn apply_mask(mask: &str, mut value: u64) -> u64 {
     value
 }
 
-enum Instruction<'a> {
+pub enum Instruction<'a> {
     Mask(&'a str),
     Assign{ address: u64, value: u64 },
 }
