@@ -35,6 +35,7 @@ mod day14a;
 mod day14b;
 mod day15a;
 mod day15b;
+mod day16a;
 
 mod waiting_area;
 mod vm;
@@ -141,40 +142,41 @@ fn run_part(read_stdin: bool, day: u8, part: char) -> Result<(), errors::AdventE
     }
 }
 
-type Solver = dyn Fn(&str) -> Result<(), errors::AdventError>;
+type Solver = fn(&str) -> Result<(), errors::AdventError>;
 
-fn get_solver(day: u8, part: char) -> Result<&'static Solver, errors::AdventError> {
+fn get_solver(day: u8, part: char) -> Result<Solver, errors::AdventError> {
     match (day, part) {
-        (1, 'a') => Ok(&day01a::solve),
-        (1, 'b') => Ok(&day01b::solve),
-        (2, 'a') => Ok(&day02a::solve),
-        (2, 'b') => Ok(&day02b::solve),
-        (3, 'a') => Ok(&day03a::solve),
-        (3, 'b') => Ok(&day03b::solve),
-        (4, 'a') => Ok(&day04a::solve),
-        (4, 'b') => Ok(&day04b::solve),
-        (5, 'a') => Ok(&day05a::solve),
-        (5, 'b') => Ok(&day05b::solve),
-        (6, 'a') => Ok(&day06a::solve),
-        (6, 'b') => Ok(&day06b::solve),
-        (7, 'a') => Ok(&day07a::solve),
-        (7, 'b') => Ok(&day07b::solve),
-        (8, 'a') => Ok(&day08a::solve),
-        (8, 'b') => Ok(&day08b::solve),
-        (9, 'a') => Ok(&day09a::solve),
-        (9, 'b') => Ok(&day09b::solve),
-        (10, 'a') => Ok(&day10a::solve),
-        (10, 'b') => Ok(&day10b::solve),
-        (11, 'a') => Ok(&day11a::solve),
-        (11, 'b') => Ok(&day11b::solve),
-        (12, 'a') => Ok(&day12a::solve),
-        (12, 'b') => Ok(&day12b::solve),
-        (13, 'a') => Ok(&day13a::solve),
-        (13, 'b') => Ok(&day13b::solve),
-        (14, 'a') => Ok(&day14a::solve),
-        (14, 'b') => Ok(&day14b::solve),
-        (15, 'a') => Ok(&day15a::solve),
-        (15, 'b') => Ok(&day15b::solve),
+        (1, 'a') => Ok(day01a::solve),
+        (1, 'b') => Ok(day01b::solve),
+        (2, 'a') => Ok(day02a::solve),
+        (2, 'b') => Ok(day02b::solve),
+        (3, 'a') => Ok(day03a::solve),
+        (3, 'b') => Ok(day03b::solve),
+        (4, 'a') => Ok(day04a::solve),
+        (4, 'b') => Ok(day04b::solve),
+        (5, 'a') => Ok(day05a::solve),
+        (5, 'b') => Ok(day05b::solve),
+        (6, 'a') => Ok(day06a::solve),
+        (6, 'b') => Ok(day06b::solve),
+        (7, 'a') => Ok(day07a::solve),
+        (7, 'b') => Ok(day07b::solve),
+        (8, 'a') => Ok(day08a::solve),
+        (8, 'b') => Ok(day08b::solve),
+        (9, 'a') => Ok(day09a::solve),
+        (9, 'b') => Ok(day09b::solve),
+        (10, 'a') => Ok(day10a::solve),
+        (10, 'b') => Ok(day10b::solve),
+        (11, 'a') => Ok(day11a::solve),
+        (11, 'b') => Ok(day11b::solve),
+        (12, 'a') => Ok(day12a::solve),
+        (12, 'b') => Ok(day12b::solve),
+        (13, 'a') => Ok(day13a::solve),
+        (13, 'b') => Ok(day13b::solve),
+        (14, 'a') => Ok(day14a::solve),
+        (14, 'b') => Ok(day14b::solve),
+        (15, 'a') => Ok(day15a::solve),
+        (15, 'b') => Ok(day15b::solve),
+        (16, 'a') => Ok(day16a::solve),
         (d, _p) if 0 < d && d <= NUM_PROBLEMS => Err(errors::AdventError::UnimplementedDayError),
         _ => Err(errors::AdventError::InvalidDayError),
     }
