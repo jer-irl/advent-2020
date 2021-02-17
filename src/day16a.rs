@@ -7,7 +7,7 @@ use super::errors::AdventError;
 pub fn solve(input: &str) -> Result<(), AdventError> {
     let structured_input = StructuredInput::from_input(input)?;
     let mut range_predicate = RangePredicate::new();
-    for lower_upper_range in structured_input.range_predicate_sets.iter().flatten() {
+    for lower_upper_range in structured_input.range_predicate_sets.iter().map(|pair| &pair.1).flatten() {
         range_predicate.add_range(*lower_upper_range);
     }
     range_predicate.coalesce();
@@ -26,14 +26,15 @@ pub fn solve(input: &str) -> Result<(), AdventError> {
     Ok(())
 }
 
-struct StructuredInput {
-    pub range_predicate_sets: Vec<Vec<(u64, u64)>>,
+pub struct StructuredInput {
+    pub range_predicate_sets: Vec<(String, Vec<(u64, u64)>)>,
     pub your_ticket: Vec<u64>,
     pub nearby_tickets: Vec<Vec<u64>>,
 }
 
 impl StructuredInput {
     pub fn from_input(input: &str) -> Result<Self, AdventError> {
+        let label_re = Regex::new(r"(?P<label>[\w\s]+):").unwrap();
         let range_re = Regex::new(r"(?P<lower>\d+)-(?P<upper>\d+)").unwrap();
         let mut lines = input.lines();
 
@@ -43,6 +44,7 @@ impl StructuredInput {
                 break;
             }
             let mut field_ranges = vec![];
+            let label = label_re.captures(line).unwrap().name("label").unwrap().as_str();
             for captures in range_re.captures_iter(line) {
                 field_ranges.push(
                     (
@@ -51,7 +53,7 @@ impl StructuredInput {
                     )
                 );
             }
-            range_predicate_sets.push(field_ranges);
+            range_predicate_sets.push((label.to_string(), field_ranges));
         }
 
         assert_eq!(lines.next(), Some("your ticket:"));
@@ -69,7 +71,7 @@ impl StructuredInput {
     }
 }
 
-struct RangePredicate {
+pub struct RangePredicate {
     ranges: Vec<(u64, u64)>,
 }
 
