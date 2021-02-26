@@ -1,13 +1,28 @@
-use std::cmp;
+//! Heavy use of newtype pattern here
+
+use std::{cmp, hash::{Hash, Hasher}};
 
 use regex::Regex;
 
 use super::errors::AdventError;
 
+#[derive(Debug, PartialEq, Eq, PartialOrd, Ord, Clone, Copy)]
+pub struct Range(pub u64, pub u64);
+#[derive(Debug, PartialEq, Eq)]
+pub struct RangePredicate(pub Vec<Range>);
+#[derive(Debug, PartialEq, Eq)]
+pub struct Field(pub String, pub RangePredicate);
+
+impl Hash for Field {
+    fn hash<H: Hasher>(&self, state: &mut H) {
+        self.0.hash(state)
+    }
+}
+
 pub fn solve(input: &str) -> Result<(), AdventError> {
     let structured_input = StructuredInput::from_input(input)?;
     let mut range_predicate = RangePredicate::new();
-    for lower_upper_range in structured_input.range_predicate_sets.iter().map(|pair| &pair.1).flatten() {
+    for lower_upper_range in structured_input.fields.iter().map(|field| &field.1.0).flatten() {
         range_predicate.add_range(*lower_upper_range);
     }
     range_predicate.coalesce();
@@ -27,7 +42,7 @@ pub fn solve(input: &str) -> Result<(), AdventError> {
 }
 
 pub struct StructuredInput {
-    pub range_predicate_sets: Vec<(String, Vec<(u64, u64)>)>,
+    pub fields: Vec<Field>,
     pub your_ticket: Vec<u64>,
     pub nearby_tickets: Vec<Vec<u64>>,
 }
@@ -38,7 +53,7 @@ impl StructuredInput {
         let range_re = Regex::new(r"(?P<lower>\d+)-(?P<upper>\d+)").unwrap();
         let mut lines = input.lines();
 
-        let mut range_predicate_sets = vec![];
+        let mut fields = vec![];
         while let Some(line) = lines.next() {
             if line.len() == 0 {
                 break;
@@ -47,13 +62,13 @@ impl StructuredInput {
             let label = label_re.captures(line).unwrap().name("label").unwrap().as_str();
             for captures in range_re.captures_iter(line) {
                 field_ranges.push(
-                    (
+                    Range(
                         captures.name("lower").unwrap().as_str().parse::<u64>().unwrap(), 
                         captures.name("upper").unwrap().as_str().parse::<u64>().unwrap(),
                     )
                 );
             }
-            range_predicate_sets.push((label.to_string(), field_ranges));
+            fields.push(Field(label.to_string(), RangePredicate(field_ranges)));
         }
 
         assert_eq!(lines.next(), Some("your ticket:"));
@@ -67,43 +82,39 @@ impl StructuredInput {
             })
             .collect();
 
-        Ok(Self { range_predicate_sets, your_ticket, nearby_tickets })
+        Ok(Self { fields, your_ticket, nearby_tickets })
     }
-}
-
-pub struct RangePredicate {
-    ranges: Vec<(u64, u64)>,
 }
 
 impl RangePredicate {
     pub fn new() -> Self {
-        Self { ranges: vec![] }
+        Self(vec![])
     }
 
-    pub fn add_range(&mut self, (low_inclusive, high_inclusive): (u64, u64)) {
-        self.ranges.push((low_inclusive, high_inclusive))
+    pub fn add_range(&mut self, Range(low_inclusive, high_inclusive): Range) {
+        self.0.push(Range(low_inclusive, high_inclusive))
     }
 
     pub fn coalesce(&mut self) {
-        self.ranges.sort();
+        self.0.sort();
         let mut new_ranges = vec![];
         let mut current_range = None;
-        for (low_inclusive, high_inclusive) in self.ranges.iter() {
+        for Range(low_inclusive, high_inclusive) in self.0.iter() {
             if current_range.is_none() {
-                current_range = Some((*low_inclusive, *high_inclusive))
+                current_range = Some(Range(*low_inclusive, *high_inclusive))
             } else if current_range.unwrap().1 >= *low_inclusive {
-                current_range = Some((current_range.unwrap().0, cmp::max(current_range.unwrap().1, *high_inclusive)));
+                current_range = Some(Range(current_range.unwrap().0, cmp::max(current_range.unwrap().1, *high_inclusive)));
             } else {
                 new_ranges.push(current_range.unwrap());
-                current_range = Some((*low_inclusive, *high_inclusive));
+                current_range = Some(Range(*low_inclusive, *high_inclusive));
             }
         }
         new_ranges.push(current_range.unwrap());
 
-        self.ranges = new_ranges;
+        self.0 = new_ranges;
     }
 
     pub fn accepts_value(&self, value: u64) -> bool {
-        self.ranges.iter().any(|(lower, upper)| (*lower..=*upper).contains(&value))
+        self.0.iter().any(|Range(lower, upper)| (*lower..=*upper).contains(&value))
     }
 }
