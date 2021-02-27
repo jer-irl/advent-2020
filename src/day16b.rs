@@ -69,15 +69,12 @@ pub fn solve(input: &str) -> Result<(), AdventError> {
     let possible_fields = possible_fields;
 
     if let Some(solved_fields) = recursive_solution_helper(&possible_fields, &resolved_fields) {
-        println!("{:?}", solved_fields);
-
         let prefix = "departure";
 
         let result: u64 = solved_fields.iter()
             .filter(|(_col_id, Field(label, _predicate))| label.starts_with(prefix))
             .map(|(col_id, _)| *structured_input.your_ticket.get(col_id.0 as usize).unwrap())
             .product();
-            //.collect();
 
         println!("{:?}", result);
         return Ok(())
